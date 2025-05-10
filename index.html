@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Earthquake Tracker</title>
+    <!-- Link to OpenLayers CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v9.1.0/ol.css">
+    <!-- Link to your custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar">
+        <a href="javascript:void(0)" class="closebtn" id="closeSidebarBtn">&times;</a>
+
+        <div class="sidebar-section">
+            <h3 class="sidebar-heading">Data Fetch Settings</h3>
+
+            <div class="sidebar-dropdown">
+                <label for="sidebarThemeStyle">Theme:</label>
+                <select id="sidebarThemeStyle" name="themeStyle">
+                    <option value="OSM-Default" selected>OSM-Default</option>
+                    <option value="light-style-chromatic-glass">Chromatic Glass (Light)</option>
+                    <option value="light-style-sketchbook">Sketchbook (Light)</option>                    
+                    <option value="light-style-ink-wash">Paper & Ink Wash (Light)</option>
+                    <option value="dark-style-synthwave-sunset">Synthwave Sunset (Dark)</option>
+                    <option value="dark-style-retro-terminal">Retro Terminal (Dark)</option>
+                    <option value="dark-style-liquid-metal">Liquid Metal (Dark)</option>
+                    <option value="dark-style-deep-ocean">Deep Ocean (Dark)</option>
+                    <option value="dark-style-nordic-night">Nordic Night (Dark)</option>
+                    <option value="dark-style-dark-blue">Dark Blue</option>
+                    <option value="dark-style-dark-midnight">Dark Midnight</option>
+                    <option value="dark-style-solar-flare">Solar Flare (Dark)</option>
+                    <option value="dark-style-bio-luminescent">Bio-Luminescent (Dark)</option>
+                    <option value="dark-style-celestial-silk">Celestial Silk (Dark)</option>                    
+                </select>
+            </div>
+
+            <label for="sidebarMinLat">Min Latitude:</label>
+            <input type="number" id="sidebarMinLat" name="minLat" step="any">
+
+            <label for="sidebarMaxLat">Max Latitude:</label>
+            <input type="number" id="sidebarMaxLat" name="maxLat" step="any">
+
+            <label for="sidebarMinLon">Min Longitude:</label>
+            <input type="number" id="sidebarMinLon" name="minLon" step="any">
+
+            <label for="sidebarMaxLon">Max Longitude:</label>
+            <input type="number" id="sidebarMaxLon" name="maxLon" step="any"> 
+
+            <button id="useMapAreaBtn" class="sidebar-button">Use Current Map Area</button>
+            <button id="clearMapAreaBtn" class="sidebar-button">Clear Map Area Filter</button>            
+
+            <label for="sidebarMinMag">Min Magnitude:</label>
+            <input type="number" id="sidebarMinMag" name="minMag" step="0.1" min="0">
+
+            <label for="sidebarMaxMag">Max Magnitude:</label>
+            <input type="number" id="sidebarMaxMag" name="maxMag" step="0.1" min="0">
+
+            <label for="sidebarLimit">Result Limit:</label>
+            <input type="number" id="sidebarLimit" name="limit" step="1" min="0" placeholder="0 for no limit">
+
+            <br>
+            <label for="sidebarStartDate">Start Date:</label>
+            <input type="date" id="sidebarStartDate" name="startDate">
+
+            <br>
+            <label for="sidebarEndDate">End Date:</label>
+            <input type="date" id="sidebarEndDate" name="endDate">
+
+            <button id="updateSettingsBtn">Update & Refetch</button>
+        </div>
+    </div>
+
+    <!-- Hamburger Button -->
+    <button class="hamburger-btn" id="openSidebarBtn">&#9776;</button>
+
+    <!-- Map Container -->
+    <div id="map" class="map"></div>
+
+    <!-- Tooltip Element -->
+    <div id="tooltip" class="ol-tooltip"></div>
+
+    <!-- Signal Animation -->
+    <div id="signal-animation" class="signal-overlay"></div>
+
+    <!-- Info Boxes -->
+    <div id="earthquakeInfo" class="earthquakeInfo"></div>    
+    <div id="weatherInfo" class="weatherInfo"></div>
+    <div id="log" class="log"></div>
+
+    <!-- Progress Bar -->
+    <div id="progress-container" class="progress-overlay">
+        <div class="progress-content">
+            <div id="progress-message">Loading...</div>
+            <div id="progress-bar-visual-container">
+                <div id="progress-bar"></div>
+            </div>
+            <div id="progress-percentage">0%</div>
+        </div>
+    </div>
+    
+    <!-- Table Container -->
+    <div id="tableContainer" class="tableContainer">
+        <h3 class="table-heading"><img src="img/earth.svg" alt="svg-image" width="32" height="32">Earthquake Data (<span id="table-count">0</span> entries)</h3>
+        <table id="data-table">
+            <thead>
+                <tr>                   
+                    <th>#</th>
+                    <th><img src="img/station.svg" alt="svg-image" width="24" height="14">Station</th>
+                    <th><img src="img/location.svg" alt="svg-image" width="24" height="14">Place</th>
+                    <th><img src="img/magnitude.svg" alt="svg-image" width="24" height="14">Magnitude</th>
+                    <th><img src="img/depth.svg" alt="svg-image" width="24" height="14">Depth (km)</th>
+                    <th><img src="img/latitude.svg" alt="svg-image" width="24" height="14">Latitude</th>
+                    <th><img src="img/longitude.svg" alt="svg-image" width="24" height="14">Longitude</th>
+                    <th><img src="img/time.svg" alt="svg-image" width="24" height="14">Time</th>
+                </tr>
+            </thead>
+            <tbody id="data-body"></tbody>
+        </table>
+    </div>
+
+    <!-- Link to OpenLayers JS -->
+    <script src="https://cdn.jsdelivr.net/npm/ol@v9.1.0/dist/ol.js"></script>
+
+    <!-- Add an ID to the initial theme script -->
+    <script id="dynamic-theme-script" src="styleJS/light-styles-neon-citrus.js"></script>
+
+    <script src="js/weather.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/openStreetMap.js"></script>
+    <script src="js/earthquake.js"></script>    
+    <script src="js/script.js"></script>
+</body>
+
+</html>
