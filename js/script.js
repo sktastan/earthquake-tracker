@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     const eqData = new EarthquakeData();
-    const weatherData = new WeatherData(null, null); // ------------------------------------------------- //
+    const weatherData = new WeatherData(null, null);
     const openStreetMap = new OpenStreetMap();
     const map = openStreetMap.getMap();
     const mapElement = map.getTargetElement(); // Get the map container element
@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let intervalId = null;
 
     // --- Function to Refetch Data and Update UI ---
-    const refetchAndRefreshUI = async (source = 'manual update', isInitialLoad = false) => { 
+    const refetchAndRefreshUI = async (source = 'manual update', isInitialLoad = false) => {
         console.log(`Refetching data due to: ${source}${isInitialLoad ? ' (Initial Load)' : ''}`);
         logToDiv(`Updating data based on new settings...`);
         clearLogToDiv();
@@ -22,7 +22,6 @@ document.addEventListener("DOMContentLoaded", () => {
         openStreetMap.getMarkerSource().clear();
         openStreetMap.lastEarthquakeMarkerSource.clear();
 
-        // ------------------------------------------------- //
         const eqdDiv = document.getElementById('earthquakeInfo');
         if (eqdDiv) eqdDiv.innerHTML = '<h3>Recent Earthquake Information</h3><p>Fetching updated data...</p>';
         const wdDiv = document.getElementById("weatherInfo");
@@ -34,8 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
             eqData.lastFetchTimes = {};
 
             logToDiv("Fetching updated earthquake data from all sources...");
-            
-            // ------------------------------------------------- //
+
             if (typeof showProgressBar === 'function') {
                 showProgressBar("Fetching earthquake data..."); // Show progress bar here
             }
@@ -57,7 +55,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const allEarthquakes = eqData.getEarthquakes();
 
-            // ------------------------------------------------- //
             if (typeof updateProgressMessage === 'function') {
                 updateProgressMessage(`Found ${allEarthquakes.length} earthquakes. Finishing up...`);
                 if (typeof updateProgress === 'function') updateProgress(95);
@@ -67,12 +64,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 logToDiv(`Found ${allEarthquakes.length} earthquakes matching criteria.`);
                 openStreetMap.populateMapMarkers(allEarthquakes);
                 const newestEarthquake = allEarthquakes[0];
-                earthquakesDataUI(newestEarthquake); // ------------------------------------------------- //
+                earthquakesDataUI(newestEarthquake);
 
                 const longitude = parseFloat(newestEarthquake.longitude);
                 const latitude = parseFloat(newestEarthquake.latitude);
-                if (!isNaN(longitude) && !isNaN(latitude)) {                  
-                    weatherData.latitude = latitude;   // ------------------------------------------------- //
+                if (!isNaN(longitude) && !isNaN(latitude)) {
+                    weatherData.latitude = latitude;
                     weatherData.longitude = longitude;
                     const currentWeatherData = await weatherData.getCurrentWeatherData();
                     if (currentWeatherData) {
@@ -87,39 +84,38 @@ document.addEventListener("DOMContentLoaded", () => {
                     logToDiv(`Refresh complete. Centered map on newest earthquake.`);
                 } else {
                     logToDiv("Refresh complete, but newest earthquake has invalid coordinates for weather/centering.");
-                    if (wdDiv) wdDiv.innerHTML = '<h3>Weather</h3><p>Cannot fetch weather without valid coordinates.</p>'; // ------------------------------------------------- //
+                    if (wdDiv) wdDiv.innerHTML = '<h3>Weather</h3><p>Cannot fetch weather without valid coordinates.</p>';
                 }
 
-                populateTable(allEarthquakes);   // ------------------------------------------------- //
+                populateTable(allEarthquakes);
 
             } else {
                 logToDiv("Refresh complete. No earthquakes found matching the specified criteria.");
                 openStreetMap.getMarkerSource().clear();
                 openStreetMap.lastEarthquakeMarkerSource.clear();
-                const dataBody = document.getElementById('data-body'); // ------------------------------------------------- //
-                if (dataBody) dataBody.innerHTML = '<tr><td colspan="8">No data found matching criteria.</td></tr>'; // ------------------------------------------------- //
-                if (eqdDiv) eqdDiv.innerHTML = '<h3>Recent Earthquake Information</h3><p style="padding: 10px;">No data found.</p>'; // ------------------------------------------------- //
-                if (wdDiv) wdDiv.innerHTML = '<h3>Weather</h3><p style="padding: 10px;">No earthquake data to fetch weather for.</p>'; // ------------------------------------------------- //
+                const dataBody = document.getElementById('data-body');
+                if (dataBody) dataBody.innerHTML = '<tr><td colspan="8">No data found matching criteria.</td></tr>';
+                if (eqdDiv) eqdDiv.innerHTML = '<h3>Recent Earthquake Information</h3><p style="padding: 10px;">No data found.</p>';
+                if (wdDiv) wdDiv.innerHTML = '<h3>Weather</h3><p style="padding: 10px;">No earthquake data to fetch weather for.</p>';
             }
 
         } catch (error) {
             console.error(`Error during data refetch (${source}):`, error);
-            
-            logToDiv(`An error occurred while refreshing data: ${error.message}`); // ------------------------------------------------- //
+
+            logToDiv(`An error occurred while refreshing data: ${error.message}`);
             if (typeof updateProgressMessage === 'function') {
                 updateProgressMessage(`Error fetching data: ${error.message}`);
             }
         } finally {
-            if (typeof updateProgress === 'function') { // ------------------------------------------------- //
+            if (typeof updateProgress === 'function') {
                 console.log("Refetch attempt finished, completing progress bar.");
                 updateProgress(100, true);
             }
-            
+
             logToDiv("Periodic checks will continue with the current settings.");
         }
     };
 
-    // ------------------------------------------------- //
     // --- Callback Function for Sidebar Updates ---
     const handleSettingsUpdate = (newSettings) => {
         console.log("Received settings update from sidebar:", newSettings);
@@ -224,14 +220,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
             openStreetMap.populateMapMarkers(allEarthquakes); // Update map
 
-            if (allEarthquakes.length > 0) {   // ------------------------------------------------- //
+            if (allEarthquakes.length > 0) {
                 earthquakesDataUI(allEarthquakes[0]); // Update info box with newest overall
             }
 
             if (processedNewEarthquakes && processedNewEarthquakes.length > 0) {
                 logToDiv(`New data received from ${currentStation.name}. Updating UI.`);
 
-                // ------------------------------------------------- //
                 populateTable(allEarthquakes); // Populate table with potentially filtered data
                 tableRowHighlight(); // Highlight newest row
 
@@ -240,7 +235,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const latitude = parseFloat(newestEarthquakeOverall.latitude);
 
                 if (!isNaN(longitude) && !isNaN(latitude)) {
-                    weatherData.latitude = latitude; // ------------------------------------------------- //
+                    weatherData.latitude = latitude;
                     weatherData.longitude = longitude;
                     const currentWeatherData = await weatherData.getCurrentWeatherData();
                     if (currentWeatherData) {
@@ -293,7 +288,6 @@ document.addEventListener("DOMContentLoaded", () => {
         intervalId = setInterval(fetchDataForNextStation, 15000); // Check every 15 seconds
     };
 
-    // ------------------------------------------------- //
     // --- Function to get current settings from eqData ---
     const getCurrentEqDataSettings = () => {
         return {
@@ -312,7 +306,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     // --- NEW: Event Listener for Map Bounds Capture ---
-    if (mapElement) { // ------------------------------------------------- //
+    if (mapElement) {
         mapElement.addEventListener('bboxcaptured', async (e) => { // Make async
             console.log("Received bboxcaptured event in script.js", e.detail.bounds);
             const bounds = e.detail.bounds;
@@ -358,7 +352,7 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("DOM loaded, initializing map and UI components...");
 
     // Initialize the sidebar, passing the getter and update callback
-    initializeSidebar(getCurrentEqDataSettings, handleSettingsUpdate); // ------------------------------------------------- //
+    initializeSidebar(getCurrentEqDataSettings, handleSettingsUpdate, openStreetMap); // Pass openStreetMap instance
     initializeUI(openStreetMap); // Pass the openStreetMap instance
 
     // Start the initial data fetch process

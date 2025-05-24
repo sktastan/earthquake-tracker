@@ -1,6 +1,6 @@
 class OpenStreetMap {
     constructor() {
-          // ------------------------------------------------- //
+        // ------------------------------------------------- //
         // --- Define Map Styles ---
         this.mapStyles = {
             'Default': {
@@ -27,6 +27,19 @@ class OpenStreetMap {
                     crossOrigin: null
                 })
             },
+
+            'World_Dark_Gray_Base': {
+                // Using Esri's World Dark Gray Base
+                // This is a dark-themed map style
+                source: () => new ol.source.XYZ({
+                    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+                    minZoom: 0,
+                    maxZoom: 22,
+                    attributions: '<a href="https://jawg.io" title="Tiles Courtesy of Jawg Maps" target="_blank">&copy; <b>Jawg</b>Maps</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                    crossOrigin: null
+                })
+            },
+
             'StadiaAlidadeSmoothDark': {
                 source: () => new ol.source.XYZ({
                     url: 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}.png',
@@ -72,19 +85,8 @@ class OpenStreetMap {
 
         // Set up the OSM layer
         this.myTileServer = new ol.layer.Tile({
-            source: new ol.source.OSM({ crossOrigin: null })
+            source: new ol.source.OSM({crossOrigin: null })          
         });
-
-        // ------------------------------------------------- //
-        // this.myTileServer = new ol.layer.Tile({
-        //     source: new ol.source.XYZ({ 
-        //         url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
-        //             minZoom: 0,
-        //             maxZoom: 22,
-        //             attributions: '<a href="https://jawg.io" title="Tiles Courtesy of Jawg Maps" target="_blank">&copy; <b>Jawg</b>Maps</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        //             crossOrigin: null
-        //     })
-        // }); // Initial layer uses the default style
 
         // --- Get Tooltip Element ---
         this.tooltipElement = document.getElementById('tooltip');
@@ -134,7 +136,6 @@ class OpenStreetMap {
         // Attach the pointermove event handler to the map
         this.map.on('pointermove', (evt) => this.handlePointerMove(evt));
 
-        // ------------------------------------------------- //
         // Add Key Listeners ---
         const mapElement = this.map.getTargetElement();
         if (mapElement) {
@@ -150,7 +151,26 @@ class OpenStreetMap {
         }
     }
 
-    // ------------------------------------------------- //
+    // --- Method to get current map view bounds ---
+    getCurrentMapViewBounds() {
+        try {
+            const view = this.map.getView();
+            const extent = view.calculateExtent(this.map.getSize()); // Get extent in map projection
+            const transformedExtent = ol.proj.transformExtent(extent, view.getProjection(), 'EPSG:4326'); // Transform to Lon/Lat (EPSG:4326)
+
+            const [minLon, minLat, maxLon, maxLat] = transformedExtent;
+
+            return {
+                minLat: parseFloat(minLat.toFixed(4)),
+                maxLat: parseFloat(maxLat.toFixed(4)),
+                minLon: parseFloat(minLon.toFixed(4)),
+                maxLon: parseFloat(maxLon.toFixed(4))
+            };
+        } catch (error) {
+            console.error("Error calculating current map view bounds:", error);
+            return null;
+        }
+    }
     // --- Key Handlers ---
     handleKeyDown(e) {
         if (e.key === 'Control' && !this.isCtrlKeyPressed) {
@@ -199,28 +219,21 @@ class OpenStreetMap {
 
         // --- Handle CTRL key press ---
         if (this.isCtrlKeyPressed) {
-            const view = this.map.getView();
-            const extent = view.calculateExtent(this.map.getSize()); // Get extent in map projection
-            const transformedExtent = ol.proj.transformExtent(extent, view.getProjection(), 'EPSG:4326'); // Transform to Lon/Lat (EPSG:4326)
+            this.capturedBounds = this.getCurrentMapViewBounds();
 
-            const [minLon, minLat, maxLon, maxLat] = transformedExtent;
-
-            // Store the bounds
-            this.capturedBounds = {
-                minLat: parseFloat(minLat.toFixed(4)),
-                maxLat: parseFloat(maxLat.toFixed(4)),
-                minLon: parseFloat(minLon.toFixed(4)),
-                maxLon: parseFloat(maxLon.toFixed(4))
-            };
-
-            // Display bounds in the tooltip
-            this.getTooltipElement().innerHTML = `Map Area:<br>` +
-                `Min Lat: ${this.capturedBounds.minLat}<br>` +
-                `Max Lat: ${this.capturedBounds.maxLat}<br>` +
-                `Min Lon: ${this.capturedBounds.minLon}<br>` +
-                `Max Lon: ${this.capturedBounds.maxLon}`;
-            this.getTooltipElement().style.display = 'block'; // Ensure it's visible
-            this.getTooltipOverlay().setPosition(evt.coordinate); // Position tooltip at mouse cursor
+            if (this.capturedBounds) {
+                // Display bounds in the tooltip
+                this.getTooltipElement().innerHTML = `Map Area:<br>` +
+                    `Min Lat: ${this.capturedBounds.minLat}<br>` +
+                    `Max Lat: ${this.capturedBounds.maxLat}<br>` +
+                    `Min Lon: ${this.capturedBounds.minLon}<br>` +
+                    `Max Lon: ${this.capturedBounds.maxLon}`;
+                this.getTooltipElement().style.display = 'block'; // Ensure it's visible
+                this.getTooltipOverlay().setPosition(evt.coordinate); // Position tooltip at mouse cursor
+            } else {
+                // If bounds could not be calculated, hide the tooltip
+                this.hideTooltip();
+            }
             return; // Don't process feature tooltips while CTRL is pressed
         }
 
@@ -380,7 +393,6 @@ class OpenStreetMap {
         }
     }
 
-    // ------------------------------------------------- //
     // --- Method to Change Map Style ---
     changeMapStyle(styleName) {
         console.log(`Attempting to change map style to: ${styleName}`);

@@ -1,4 +1,3 @@
-// ------------------------------------------------- //s
 // Keep track of the currently highlighted row and its timeout
 let highlightedRowInfo = {
     rowElement: null,
@@ -19,7 +18,6 @@ function clearLogToDiv() {
     logDiv.innerHTML = ''; // Clear previous content
 }
 
-// ------------------------------------------------- //
 function ConvertCelsiusToFahrenheit(celsius) {
     return (celsius * 9 / 5 + 32).toFixed(2);
 }
@@ -72,7 +70,6 @@ function weatherDataUI(data) {
             `;
 }
 
-// ------------------------------------------------- //
 function earthquakesDataUI(eqd) {
     const imgPath = `img/`; // Construct the image path
     const imgSize = 24; // Set the image size (adjust as needed)
@@ -106,7 +103,6 @@ function earthquakesDataUI(eqd) {
     `;
 }
 
-  // ------------------------------------------------- //
 // --- Function to highlight the first row in the table ---
 function tableRowHighlight() {
     console.log("tableRowHighlight called");
@@ -162,7 +158,6 @@ function tableRowHighlight() {
     }
 }
 
- // ------------------------------------------------- //
 // Add isInitialLoad parameter, default to false
 function populateTable(earthquakesData, isInitialLoad = false) {
     const dataBody = document.getElementById('data-body');
@@ -246,17 +241,13 @@ function populateTable(earthquakesData, isInitialLoad = false) {
         earthquakesData.forEach((earthquake, index) => {
             const row = document.createElement('tr');
             const colorClass = getColorClass(earthquake.magnitude);
-            // if (colorClass) { // Only add class if one was returned
-            //     let firstChild = row.childNodes[0];
-            //     firstChild.classList.add(colorClass);
-            //     // row.classList.add(colorClass);
-            // }
+
             try {
                 // Add the row number cell
                 addCell(row, index + 1);
 
-                 // Apply the color class to the first cell (row number cell) if a class is determined
-                 if (colorClass && row.childNodes[0]) {
+                // Apply the color class to the first cell (row number cell) if a class is determined
+                if (colorClass && row.childNodes[0]) {
                     row.childNodes[0].classList.add(colorClass);
                 }
 
@@ -289,42 +280,8 @@ function populateTable(earthquakesData, isInitialLoad = false) {
 }
 
 // ------------------------------------------------- //
-// --- Highlight Map Marker Functionality ---
-// function highlightMapMarker(marker, duration = 15000) {
-//     console.warn("highlightMapMarker function might be incompatible with OpenLayers.");
-
-//     if (mapMarkerHighlightTimeoutId) {
-//         clearTimeout(mapMarkerHighlightTimeoutId);
-//         // If the previous highlighted marker is different from the new one, remove the highlight
-//         if (mapMarkerHighlightTimeoutId.marker && mapMarkerHighlightTimeoutId.marker !== marker) {
-//             // Check if marker is valid and has classList before removing
-//             if (mapMarkerHighlightTimeoutId.marker.classList) {
-//                 mapMarkerHighlightTimeoutId.marker.classList.remove('highlighted-map-marker');
-//             }
-//         }
-//         mapMarkerHighlightTimeoutId = null;
-//     }
-
-//     if (!marker || !marker.classList) { // Check if marker is valid and has classList
-//         return;
-//     }
-
-//     marker.classList.add('highlighted-map-marker');
-
-//     mapMarkerHighlightTimeoutId = setTimeout(() => {
-//         // Check again before removing
-//         if (marker && marker.classList) {
-//             marker.classList.remove('highlighted-map-marker');
-//         }
-//         mapMarkerHighlightTimeoutId = null;
-//     }, duration);
-//     // Store the marker associated with the timeout
-//     mapMarkerHighlightTimeoutId.marker = marker;
-// }
-
-// ------------------------------------------------- //
 // --- Sidebar Functionality ---
-function initializeSidebar(getCurrentSettingsCallback, updateSettingsCallback) {
+function initializeSidebar(getCurrentSettingsCallback, updateSettingsCallback, osmInstance) {
     const sidebar = document.getElementById("sidebar");
     const openBtn = document.getElementById("openSidebarBtn");
     const closeBtn = document.getElementById("closeSidebarBtn");
@@ -345,17 +302,19 @@ function initializeSidebar(getCurrentSettingsCallback, updateSettingsCallback) {
     const maxLonInput = document.getElementById("sidebarMaxLon");
     const useMapAreaBtn = document.getElementById("useMapAreaBtn");
     const clearMapAreaBtn = document.getElementById("clearMapAreaBtn");
+    const getMapBoundsBtn = document.getElementById("getMapBoundsBtn"); // NEW: Button to get map bounds
     // --- END NEW ---
 
     // --- Check ALL required elements ---
     if (!sidebar || !openBtn || !closeBtn || !minMagInput || !maxMagInput || !limitInput ||
         !startDateInput || !endDateInput || !updateBtn || !minLatInput || !maxLatInput ||
-        !minLonInput || !maxLonInput || !useMapAreaBtn || !clearMapAreaBtn) {
+        !minLonInput || !maxLonInput || !useMapAreaBtn || !clearMapAreaBtn || !getMapBoundsBtn) { // Added getMapBoundsBtn
         console.error("One or more sidebar elements (buttons, inputs) not found. Sidebar functionality may be incomplete.");
         // Optionally disable buttons if elements are missing
         if (updateBtn) updateBtn.disabled = true;
         if (useMapAreaBtn) useMapAreaBtn.disabled = true;
         if (clearMapAreaBtn) clearMapAreaBtn.disabled = true;
+        if (getMapBoundsBtn) getMapBoundsBtn.disabled = true; // Disable if missing
         return; // Stop initialization if critical elements are missing
     }
     if (typeof getCurrentSettingsCallback !== 'function') {
@@ -502,8 +461,8 @@ function initializeSidebar(getCurrentSettingsCallback, updateSettingsCallback) {
         console.log("Sidebar inputs updated from map area.");
     }
     window.updateSidebarFromMap = updateSidebarFromMap;
-   
-    function handleUseMapArea() {       
+
+    function handleUseMapArea() {
         // We can just trigger the main update function here.
         console.log("'Use Map Area' clicked. Applying current sidebar values.");
         handleUpdateClick(); // Apply whatever is currently in the sidebar inputs
@@ -517,13 +476,37 @@ function initializeSidebar(getCurrentSettingsCallback, updateSettingsCallback) {
         maxLonInput.value = '';
         console.log("Map area filter cleared. Click 'Update Settings' to apply.");
     }
- 
+
     // Event Listeners
     openBtn.addEventListener('click', openNav);
     closeBtn.addEventListener('click', closeNav);
     updateBtn.addEventListener('click', handleUpdateClick);
     useMapAreaBtn.addEventListener('click', handleUseMapArea);
     clearMapAreaBtn.addEventListener('click', handleClearMapArea);
+
+    // --- NEW: Event Listener for Get Current Map Area button ---
+    if (getMapBoundsBtn) { // Check if the button element exists
+        if (osmInstance && typeof osmInstance.getCurrentMapViewBounds === 'function') {
+            getMapBoundsBtn.addEventListener('click', () => {
+                const bounds = osmInstance.getCurrentMapViewBounds();
+                if (bounds) {
+                    minLatInput.value = bounds.minLat;
+                    maxLatInput.value = bounds.maxLat;
+                    minLonInput.value = bounds.minLon;
+                    maxLonInput.value = bounds.maxLon;
+                    console.log("Sidebar Lat/Lon inputs updated with current map view bounds.");
+                } else {
+                    console.warn("Could not retrieve map view bounds to populate sidebar inputs.");
+                    alert("Could not retrieve current map view bounds. Try adjusting the map view.");
+                }
+            });
+        } else {
+            // If osmInstance or the method is not available, disable the button and log a warning.
+            console.warn("OpenStreetMap instance or 'getCurrentMapViewBounds' method not available. 'Get Current Map Area' button will be disabled.");
+            getMapBoundsBtn.disabled = true;
+        }
+    }
+    // --- END NEW ---
 } // End of initializeSidebar
 
 // --- Progress Bar Logic ---
@@ -619,7 +602,7 @@ let showProgressBar; // Declare variable for showing the bar
         // Give it a small initial boost
         updateProgress(10);
     }
-   
+
     // Start initial progress on page load
     updateProgress(25);
     updateProgressMessage("Loading page elements...");
@@ -647,7 +630,6 @@ let showProgressBar; // Declare variable for showing the bar
 
 })(); // End of Progress Bar IIFE
 
-  // ------------------------------------------------- //
 // /**
 //  * Loads a theme script dynamically.
 //  * @param {string} themeName - The name of the theme file (without .js extension).
@@ -708,18 +690,19 @@ function initializeUI(osmInstance) { // Accept the OpenStreetMap instance
     // Mapping from UI Theme to Map Style
     const themeToMapStyle = {
         'OSM-Default': 'Default',
+        'OSM-Default-DarkMap': 'World_Dark_Gray_Base',
         'light-style-chromatic-glass': 'EsriWorldGrayCanvas',
-        'light-style-sketchbook': 'EsriWorldGrayCanvas',       
+        'light-style-sketchbook': 'EsriWorldGrayCanvas',
         'light-style-ink-wash': 'EsriWorldGrayCanvas',
         'dark-style-synthwave-sunset': 'GeoportailFrance',
-        'dark-style-retro-terminal': 'StadiaAlidadeSmoothDark',
-        'dark-style-liquid-metal': 'StadiaAlidadeSmoothDark',
+        'dark-style-retro-terminal': 'World_Dark_Gray_Base',
+        'dark-style-liquid-metal': 'World_Dark_Gray_Base',
         'dark-style-deep-ocean': 'GeoportailFrance',
         'dark-style-nordic-night': 'TopPlusOpenGrey',
         'dark-style-dark-blue': 'EsriWorldImagery',
         'dark-style-dark-midnight': 'TopPlusOpenGrey',
-        'dark-style-solar-flare': 'StadiaAlidadeSmoothDark', // Added Solar Flare
-        'dark-style-bio-luminescent': 'TopPlusOpenGrey', // Added Bio-Luminescent (Example map style)
+        'dark-style-solar-flare': 'World_Dark_Gray_Base', // Added Solar Flare
+        'dark-style-bio-luminescent': 'World_Dark_Gray_Base', // Added Bio-Luminescent (Example map style)
         'dark-style-celestial-silk': 'TopPlusOpenGrey' // Added Celestial Silk (Example map style)        
         // Add other themes here as needed
     };
