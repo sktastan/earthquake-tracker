@@ -630,6 +630,67 @@ let showProgressBar; // Declare variable for showing the bar
 
 })(); // End of Progress Bar IIFE
 
+// --- Bottom Navigation Bar Functionality for Mobile ---
+function initializeBottomNavBar() {
+    const earthquakeInfoPanel = document.getElementById('earthquakeInfo');
+    const weatherInfoPanel = document.getElementById('weatherInfo');
+    const tableContainerPanel = document.getElementById('tableContainer');
+
+    const toggleEarthquakeBtn = document.getElementById('toggleEarthquakeInfo');
+    const toggleWeatherBtn = document.getElementById('toggleWeatherInfo');
+    const toggleTableBtn = document.getElementById('toggleTableContainer');
+
+    const allPanels = [earthquakeInfoPanel, weatherInfoPanel, tableContainerPanel];
+    const allNavButtons = [toggleEarthquakeBtn, toggleWeatherBtn, toggleTableBtn];
+
+    if (!earthquakeInfoPanel || !weatherInfoPanel || !tableContainerPanel || !toggleEarthquakeBtn || !toggleWeatherBtn || !toggleTableBtn) {
+        console.warn("One or more bottom navigation bar elements or panels not found. Mobile toggle functionality may be incomplete.");
+        return;
+    }
+
+    function setActivePanel(targetPanel, targetButton) {
+        // Hide all panels and remove active class from all buttons
+        allPanels.forEach(panel => panel.classList.remove('visible'));
+        allNavButtons.forEach(button => button.classList.remove('active'));
+
+        // If a targetPanel is provided and it's not already visible, show it and set button to active
+        if (targetPanel) {
+            targetPanel.classList.add('visible');
+            if (targetButton) {
+                targetButton.classList.add('active');
+            }
+        }
+        // If no targetPanel (e.g., clicking an active button again), all panels remain hidden.
+    }
+
+    toggleEarthquakeBtn.addEventListener('click', () => {
+        if (earthquakeInfoPanel.classList.contains('visible')) {
+            setActivePanel(null, null); // Hide if already visible
+        } else {
+            setActivePanel(earthquakeInfoPanel, toggleEarthquakeBtn);
+        }
+    });
+
+    toggleWeatherBtn.addEventListener('click', () => {
+        if (weatherInfoPanel.classList.contains('visible')) {
+            setActivePanel(null, null); // Hide if already visible
+        } else {
+            setActivePanel(weatherInfoPanel, toggleWeatherBtn);
+        }
+    });
+
+    toggleTableBtn.addEventListener('click', () => {
+        if (tableContainerPanel.classList.contains('visible')) {
+            setActivePanel(null, null); // Hide if already visible
+        } else {
+            setActivePanel(tableContainerPanel, toggleTableBtn);
+        }
+    });
+
+    // Initially, no panel is active on mobile unless explicitly set
+    // setActivePanel(null, null); // Or set a default one if desired: setActivePanel(earthquakeInfoPanel, toggleEarthquakeBtn);
+}
+
 // /**
 //  * Loads a theme script dynamically.
 //  * @param {string} themeName - The name of the theme file (without .js extension).

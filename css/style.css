@@ -428,3 +428,146 @@ table tr:hover {
     opacity: 0;
     pointer-events: none;
 }
+
+/* Responsive Styles for Mobile Devices */
+@media (max-width: 719px) {
+    body {
+        flex-direction: column; /* Stack elements vertically */
+        padding-bottom: 60px; /* Space for the bottom nav bar */
+    }
+
+    .sidebar {
+        width: 100%; /* Full width sidebar on mobile */
+        padding-top: 20px;
+        height: calc(100% - 60px); /* Adjust height considering nav bar */
+        z-index: 1005; /* Ensure sidebar is above other elements */
+    }
+
+    .sidebar-heading {
+        margin-top: 0;
+        padding: 15px;
+    }
+    
+    .sidebar .closebtn {
+        top: 5px;
+        right: 15px;
+        font-size: 30px;
+    }
+
+    .hamburger-btn {
+        top: 10px;
+        left: 15px;
+        z-index: 1006; /* Ensure hamburger is above sidebar when closed */
+    }
+
+    /* Bottom Navigation Bar */
+    .bottom-nav-bar {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 60px;
+        background-color: #2e2e2e;
+        color: white;
+        z-index: 1000;
+        box-shadow: 0 -2px 5px rgba(0,0,0,0.2);
+    }
+
+    .nav-button {
+        background-color: transparent;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        font-size: 14px;
+        cursor: pointer;
+        flex-grow: 1;
+        text-align: center;
+        height: 100%;
+        display: flex;
+        flex-direction: column; /* Stack icon and text vertically */
+        align-items: center;
+        justify-content: center;
+        gap: 4px; /* Space between icon and text */
+    }
+
+    /* .nav-button img {
+        filter: invert(1) brightness(2);
+    }
+
+    .nav-button span {
+        font-size: 10px; 
+    }*/ 
+
+    .nav-button:hover, .nav-button.active {
+        background-color: #b22424;
+    }
+
+    .nav-button.active img {
+        /* Optional: different style for active icon, e.g., if you had colored active icons */
+    }
+
+    /* Adjustments for toggleable panels */
+    .earthquakeInfo,
+    .weatherInfo,
+    .tableContainer {
+        position: fixed; /* Changed from absolute/fixed with specific L/R */
+        left: 0;
+        right: 0;
+        top: 0; /* Will be shown at the top, below any header if present */
+        bottom: 60px; /* Make space for the bottom nav bar */
+        width: 100%;
+        height: auto; /* Adjust height automatically */
+        max-height: calc(100vh - 60px); /* Max height considering nav bar */
+        overflow-y: auto;
+        z-index: 990; /* Below nav bar and sidebar, but above map */
+        display: none; /* Hidden by default */
+        background: rgba(20, 20, 20, 0.9); /* Darker background for focus */
+        backdrop-filter: blur(8px);
+        padding: 15px;
+        box-sizing: border-box;
+        border-radius: 0; /* Full screen, no radius needed */
+    }
+    
+    .earthquakeInfo.visible,
+    .weatherInfo.visible,
+    .tableContainer.visible {
+        display: block; /* Show when .visible class is added */
+    }
+
+    .tableContainer {
+        padding: 0; /* tableContainer might have its own padding for table */
+    }
+
+    .tableContainer .table-heading {
+        position: sticky;
+        top: 0; /* Sticky header for the table within its container */
+    }
+    
+    .tableContainer th {
+        top: 48px; /* Adjust based on .table-heading height if it's also sticky */
+    }
+
+    .earthquakeInfo, .weatherInfo {
+        padding: 20px; /* Add some padding for content */
+    }
+
+    .earthquakeInfo h3, .weatherInfo h3 {
+        margin-top: 0;
+    }
+
+    /* Ensure map is below the panels when they are visible */
+    .map {
+        /* height: calc(100% - 60px); Adjust map height if nav bar is present */
+        width: 100%;
+        position: relative; /* Ensure z-index works */
+        z-index: 1; /* Keep map at the bottom of stacking context */
+    }
+
+    /* Hide desktop-specific elements or adjust them */
+    .log { /* Assuming .log is not needed or will be integrated differently */
+        display: none; 
+    }
+}

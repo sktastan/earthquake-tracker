@@ -358,4 +358,11 @@ document.addEventListener("DOMContentLoaded", () => {
     // Start the initial data fetch process
     initialFetchData();
 
+      // Check if the bottom nav bar exists (it's only added for mobile view, but JS runs always)
+    // A more robust check would be to see if the .bottom-nav-bar element is in the DOM
+    // For now, we assume if the buttons are there, the bar is meant to be functional.
+    if (document.getElementById('toggleEarthquakeInfo')) {
+        initializeBottomNavBar();
+    }
+
 }); // End DOMContentLoaded
