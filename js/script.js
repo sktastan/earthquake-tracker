@@ -14,6 +14,9 @@ document.addEventListener("DOMContentLoaded", () => {
     let intervalId = null;
 
     // --- Function to Refetch Data and Update UI ---
+    // ---------------------------------------------------------------------
+    //      Coordinates data fetching from all stations and updates the UI.
+    // ---------------------------------------------------------------------
     const refetchAndRefreshUI = async (source = 'manual update', isInitialLoad = false) => {
         console.log(`Refetching data due to: ${source}${isInitialLoad ? ' (Initial Load)' : ''}`);
         logToDiv(`Updating data based on new settings...`);
@@ -117,6 +120,9 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     // --- Callback Function for Sidebar Updates ---
+    // ---------------------------------------------------------------------
+    //      Handles settings updates triggered from the sidebar.
+    // ---------------------------------------------------------------------
     const handleSettingsUpdate = (newSettings) => {
         console.log("Received settings update from sidebar:", newSettings);
         let settingsChanged = false;
@@ -193,6 +199,9 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     // --- Initial Data Fetch Function ---
+    // ---------------------------------------------------------------------
+    //      Performs the initial data fetch sequence on page load.
+    // ---------------------------------------------------------------------
     const initialFetchData = async () => {
         console.log("Starting initial data fetch...");
         try {
@@ -207,6 +216,9 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     // --- Interval Fetching (fetchDataForNextStation) ---
+    // ---------------------------------------------------------------------
+    //      Fetches data for the next station in the rotation during intervals.
+    // ---------------------------------------------------------------------
     const fetchDataForNextStation = async () => {
         const currentStation = stations[stationIndex];
         // console.log(`Interval fetch: Checking station ${currentStation.name}...`);
@@ -280,6 +292,9 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     // --- Function to Start Interval ---
+    // ---------------------------------------------------------------------
+    //      Starts the periodic data fetching interval.
+    // ---------------------------------------------------------------------
     const startIntervalFetching = () => {
         if (intervalId) clearInterval(intervalId);
         console.log("Starting interval fetching...");
@@ -289,6 +304,9 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     // --- Function to get current settings from eqData ---
+    // ---------------------------------------------------------------------
+    //      Retrieves the current settings state from the EarthquakeData instance.
+    // ---------------------------------------------------------------------
     const getCurrentEqDataSettings = () => {
         return {
             minMagnitude: eqData.minMagnitude,

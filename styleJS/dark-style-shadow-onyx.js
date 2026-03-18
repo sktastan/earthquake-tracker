@@ -1,3 +1,6 @@
+// ---------------------------------------------------------------------
+//      Applies the "Shadow Onyx" (Dark) UI theme styles dynamically.
+// ---------------------------------------------------------------------
 (function () { // Start of IIFE
 
     const themeId = 'dynamic-styles-shadow-onyx';

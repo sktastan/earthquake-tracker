@@ -1,3 +1,6 @@
+// ---------------------------------------------------------------------
+//      Applies the "Solid Crimson" (Dark) UI theme styles dynamically.
+// ---------------------------------------------------------------------
 (function () { // Start of IIFE
 
     const themeId = 'dynamic-styles-solid-indigo';

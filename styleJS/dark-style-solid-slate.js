@@ -1,3 +1,6 @@
+// ---------------------------------------------------------------------
+//      Applies the "Solid Slate" (Dark) UI theme styles dynamically.
+// ---------------------------------------------------------------------
 (function () { // Start of IIFE
 
     const themeId = 'dynamic-styles-solid-slate';

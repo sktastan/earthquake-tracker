@@ -1,6 +1,8 @@
+<!-- -------------------------------------------------------------------
+      Head Section: Metadata, Title, and CSS Links
+// ----------------------------------------------------------------- -->
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,7 +15,9 @@
 </head>
 
 <body>
-    <!-- Sidebar -->
+    <!-- -------------------------------------------------------------------
+          Sidebar: Filter Settings and Configuration
+    // ----------------------------------------------------------------- -->
     <div id="sidebar" class="sidebar">
         <a href="javascript:void(0)" class="closebtn" id="closeSidebarBtn">&times;</a>
 
@@ -76,24 +80,31 @@
         </div>
     </div>
 
-    <!-- Hamburger Button -->
+    <!-- -------------------------------------------------------------------
+          Control Buttons and Map Container
+    // ----------------------------------------------------------------- -->
     <button class="hamburger-btn" id="openSidebarBtn">&#9776;</button>
 
     <!-- Map Container -->
     <div id="map" class="map"></div>
 
-    <!-- Tooltip Element -->
+    <!-- -------------------------------------------------------------------
+          Overlays: Tooltip and Signal Animation
+    // ----------------------------------------------------------------- -->
     <div id="tooltip" class="ol-tooltip"></div>
 
-    <!-- Signal Animation -->
     <div id="signal-animation" class="signal-overlay"></div>
 
-    <!-- Info Boxes -->
+    <!-- -------------------------------------------------------------------
+          Info Panels: Earthquake, Weather, Log
+    // ----------------------------------------------------------------- -->
     <div id="earthquakeInfo" class="earthquakeInfo"></div>
     <div id="weatherInfo" class="weatherInfo"></div>
     <div id="log" class="log"></div>
 
-    <!-- Progress Bar -->
+    <!-- -------------------------------------------------------------------
+          Progress Bar Overlay
+    // ----------------------------------------------------------------- -->
     <div id="progress-container" class="progress-overlay">
         <div class="progress-content">
             <div id="progress-message">Loading...</div>
@@ -104,7 +115,9 @@
         </div>
     </div>
 
-    <!-- Table Container -->
+    <!-- -------------------------------------------------------------------
+          Data Table Container
+    // ----------------------------------------------------------------- -->
     <div id="tableContainer" class="tableContainer">     
         <h3 class="table-heading"><img src="img/earth.svg" alt="svg-image" width="32" height="32">Earthquake Data (<span
                 id="table-count">0</span> entries)</h3>
@@ -125,7 +138,9 @@
         </table>
     </div>
 
-     <!-- Bottom Navigation Bar for Mobile -->
+     <!-- -------------------------------------------------------------------
+           Bottom Navigation Bar (Mobile Only)
+     // ----------------------------------------------------------------- -->
     <div class="bottom-nav-bar">
         <button id="toggleEarthquakeInfo" class="nav-button"><img src="img/information.svg" alt="Earthquake Info"
                 width="32" height="32"> <span>Earthquake Info</span></button>
@@ -135,7 +150,9 @@
                 height="32"> <span>Data Table</span></button>
     </div>
 
-    <!-- Link to OpenLayers JS -->
+    <!-- -------------------------------------------------------------------
+          Script Inclusions
+    // ----------------------------------------------------------------- -->
     <!-- <script src="https://cdn.jsdelivr.net/npm/ol@v9.1.0/dist/ol.js"></script> -->
      <script src="https://cdn.jsdelivr.net/npm/ol@v10.5.0/dist/ol.js"></script>
      <!-- <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/build/ol.js"></script> -->

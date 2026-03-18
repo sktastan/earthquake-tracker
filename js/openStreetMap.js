@@ -1,4 +1,10 @@
+// ---------------------------------------------------------------------
+//      Wrapper class for OpenLayers map initialization and management.
+// ---------------------------------------------------------------------
 class OpenStreetMap {
+    // ---------------------------------------------------------------------
+    //      Initializes the map, layers, overlays, and event listeners.
+    // ---------------------------------------------------------------------
     constructor() {
         // ------------------------------------------------- //
         // --- Define Map Styles ---
@@ -152,6 +158,9 @@ class OpenStreetMap {
     }
 
     // --- Method to get current map view bounds ---
+    // ---------------------------------------------------------------------
+    //      Calculates and returns the current geographic bounds of the map view.
+    // ---------------------------------------------------------------------
     getCurrentMapViewBounds() {
         try {
             const view = this.map.getView();
@@ -172,6 +181,9 @@ class OpenStreetMap {
         }
     }
     // --- Key Handlers ---
+    // ---------------------------------------------------------------------
+    //      Handles keydown events, specifically for capturing map bounds with CTRL.
+    // ---------------------------------------------------------------------
     handleKeyDown(e) {
         if (e.key === 'Control' && !this.isCtrlKeyPressed) {
             this.isCtrlKeyPressed = true;
@@ -183,6 +195,9 @@ class OpenStreetMap {
         }
     }
 
+    // ---------------------------------------------------------------------
+    //      Handles keyup events, dispatching the captured bounds event.
+    // ---------------------------------------------------------------------
     handleKeyUp(e) {
         if (e.key === 'Control') {
             this.isCtrlKeyPressed = false;
@@ -205,11 +220,17 @@ class OpenStreetMap {
     }
 
     // --- Helper to hide tooltip ---
+    // ---------------------------------------------------------------------
+    //      Hides the tooltip overlay.
+    // ---------------------------------------------------------------------
     hideTooltip() {
         if (this.tooltipElement) this.tooltipElement.style.display = 'none';
         this.tooltipOverlay.setPosition(undefined);
     }
 
+    // ---------------------------------------------------------------------
+    //      Handles pointer move events for tooltips and interactions.
+    // ---------------------------------------------------------------------
     handlePointerMove(evt) {
         // If dragging, hide tooltip and return
         if (evt.dragging) {
@@ -275,26 +296,47 @@ class OpenStreetMap {
         // --- End Original Feature Tooltip Logic ---
     }
 
+    // ---------------------------------------------------------------------
+    //      Returns the OpenLayers map instance.
+    // ---------------------------------------------------------------------
     getMap() {
         return this.map;
     }
 
+    // ---------------------------------------------------------------------
+    //      Returns the vector source used for earthquake markers.
+    // ---------------------------------------------------------------------
     getMarkerSource() {
         return this.markerSource;
     }
 
+    // ---------------------------------------------------------------------
+    //      Returns the tooltip overlay instance.
+    // ---------------------------------------------------------------------
     getTooltipOverlay() {
         return this.tooltipOverlay;
     }
+    // ---------------------------------------------------------------------
+    //      Returns the signal overlay instance.
+    // ---------------------------------------------------------------------
     getSignalOverlay() {
         return this.signalOverlay;
     }
+    // ---------------------------------------------------------------------
+    //      Returns the DOM element for the signal animation.
+    // ---------------------------------------------------------------------
     getSignalElement() {
         return this.signalElement;
     }
+    // ---------------------------------------------------------------------
+    //      Returns the DOM element for the tooltip.
+    // ---------------------------------------------------------------------
     getTooltipElement() {
         return this.tooltipElement;
     }
+    // ---------------------------------------------------------------------
+    //      Creates a dynamic style function for earthquake markers based on magnitude.
+    // ---------------------------------------------------------------------
     createMarkerStyle() {
         // Define base stroke style (remains the same)
         const baseStroke = new ol.style.Stroke({ color: 'black', width: 1 });
@@ -345,6 +387,9 @@ class OpenStreetMap {
             });
         };
     }
+    // ---------------------------------------------------------------------
+    //      Creates the style for the most recent earthquake marker.
+    // ---------------------------------------------------------------------
     createLastEarthquakeMarkerStyle() {
         return new ol.style.Style({
             image: new ol.style.Icon({
@@ -356,6 +401,9 @@ class OpenStreetMap {
             }),
         });
     }
+    // ---------------------------------------------------------------------
+    //      Populates the map with markers from the provided earthquake data.
+    // ---------------------------------------------------------------------
     populateMapMarkers(earthquakesData) {
         if (!this.markerSource) {
             console.error("Vector source for markers not provided.");
@@ -394,6 +442,9 @@ class OpenStreetMap {
     }
 
     // --- Method to Change Map Style ---
+    // ---------------------------------------------------------------------
+    //      Changes the base tile layer of the map to the specified style.
+    // ---------------------------------------------------------------------
     changeMapStyle(styleName) {
         console.log(`Attempting to change map style to: ${styleName}`);
         const styleConfig = this.mapStyles[styleName];

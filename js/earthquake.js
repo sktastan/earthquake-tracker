@@ -1,4 +1,10 @@
+// ---------------------------------------------------------------------
+//      Manages earthquake data fetching, processing, and filtering.
+// ---------------------------------------------------------------------
 class EarthquakeData {
+    // ---------------------------------------------------------------------
+    //      Initializes the EarthquakeData instance with default settings.
+    // ---------------------------------------------------------------------
     constructor() {
         this.baseUrl = "https://www.seismicportal.eu/fdsnws/event/1/query";
         this.format = "json";
@@ -38,14 +44,23 @@ class EarthquakeData {
     }
 
     // --- Existing Setters ---
+    // ---------------------------------------------------------------------
+    //      Sets the start date for data fetching.
+    // ---------------------------------------------------------------------
     setStartDate(startDate) {
         this.startDate = startDate;
     }
 
+    // ---------------------------------------------------------------------
+    //      Sets the end date for data fetching.
+    // ---------------------------------------------------------------------
     setEndDate(endDate) {
         this.endDate = endDate;
     }
 
+    // ---------------------------------------------------------------------
+    //      Sets the maximum magnitude filter.
+    // ---------------------------------------------------------------------
     setMaxMagnitude(maxMagnitude) {
         if (maxMagnitude < this.minMagnitude) {
             throw new Error("Maximum magnitude must be greater than or equal to minimum magnitude.");
@@ -53,6 +68,9 @@ class EarthquakeData {
         this.maxMagnitude = maxMagnitude;
     }
 
+    // ---------------------------------------------------------------------
+    //      Sets the minimum magnitude filter.
+    // ---------------------------------------------------------------------
     setMinMagnitude(minMagnitude) {
         if (minMagnitude < 0) {
             throw new Error("Minimum magnitude must be a non-negative number.");
@@ -60,6 +78,9 @@ class EarthquakeData {
         this.minMagnitude = minMagnitude;
     }
 
+    // ---------------------------------------------------------------------
+    //      Sets the limit for the number of results.
+    // ---------------------------------------------------------------------
     setLimit(limit) {
         if (limit < 0) {
             throw new Error("Limit must be a positive number.");
@@ -67,6 +88,9 @@ class EarthquakeData {
         this.limit = limit;
     }
 
+    // ---------------------------------------------------------------------
+    //      Sets the station URL and name (usgs or emsc).
+    // ---------------------------------------------------------------------
     setStation(stationUrl, stationName) {
         if (!stationUrl) {
             throw new Error("Station URL must be provided.");
@@ -80,6 +104,9 @@ class EarthquakeData {
     }
 
     // --- NEW Bounding Box Setters ---
+    // ---------------------------------------------------------------------
+    //      Sets the minimum latitude for geospatial filtering.
+    // ---------------------------------------------------------------------
     setMinLatitude(lat) {
         const numLat = parseFloat(lat);
         if (lat !== null && (isNaN(numLat) || numLat < -90 || numLat > 90)) {
@@ -88,6 +115,9 @@ class EarthquakeData {
         this.minLatitude = (lat === null || lat === '') ? null : numLat;
     }
 
+    // ---------------------------------------------------------------------
+    //      Sets the maximum latitude for geospatial filtering.
+    // ---------------------------------------------------------------------
     setMaxLatitude(lat) {
         const numLat = parseFloat(lat);
         if (lat !== null && (isNaN(numLat) || numLat < -90 || numLat > 90)) {
@@ -99,6 +129,9 @@ class EarthquakeData {
         this.maxLatitude = (lat === null || lat === '') ? null : numLat;
     }
 
+    // ---------------------------------------------------------------------
+    //      Sets the minimum longitude for geospatial filtering.
+    // ---------------------------------------------------------------------
     setMinLongitude(lon) {
         const numLon = parseFloat(lon);
         if (lon !== null && (isNaN(numLon) || numLon < -180 || numLon > 180)) {
@@ -107,6 +140,9 @@ class EarthquakeData {
         this.minLongitude = (lon === null || lon === '') ? null : numLon;
     }
 
+    // ---------------------------------------------------------------------
+    //      Sets the maximum longitude for geospatial filtering.
+    // ---------------------------------------------------------------------
     setMaxLongitude(lon) {
         const numLon = parseFloat(lon);
         if (lon !== null && (isNaN(numLon) || numLon < -180 || numLon > 180)) {
@@ -118,12 +154,27 @@ class EarthquakeData {
     // --- End Bounding Box Setters ---
 
     // --- Bounding Box Getters ---
+    // ---------------------------------------------------------------------
+    //      Returns the current minimum latitude.
+    // ---------------------------------------------------------------------
     getMinLatitude() { return this.minLatitude; }
+    // ---------------------------------------------------------------------
+    //      Returns the current maximum latitude.
+    // ---------------------------------------------------------------------
     getMaxLatitude() { return this.maxLatitude; }
+    // ---------------------------------------------------------------------
+    //      Returns the current minimum longitude.
+    // ---------------------------------------------------------------------
     getMinLongitude() { return this.minLongitude; }
+    // ---------------------------------------------------------------------
+    //      Returns the current maximum longitude.
+    // ---------------------------------------------------------------------
     getMaxLongitude() { return this.maxLongitude; }
     // --- End Bounding Box Getters ---    
 
+    // ---------------------------------------------------------------------
+    //      Fetches earthquake data from the configured API endpoint.
+    // ---------------------------------------------------------------------
     async fetchData() {
         const formattedStartDate = `${this.startDate}T00:00:00Z`;
         const formattedEndDate = `${this.endDate}T23:59:59Z`;
@@ -206,6 +257,9 @@ class EarthquakeData {
     }
 
     // processData remains the same...
+    // ---------------------------------------------------------------------
+    //      Processes raw API response data into a standardized format.
+    // ---------------------------------------------------------------------
     processData(data) {
         // Use optional chaining for safer access
         const features = data?.features;
@@ -308,6 +362,9 @@ class EarthquakeData {
         return processedNewEarthquakes;
     }
 
+    // ---------------------------------------------------------------------
+    //      Returns the array of processed earthquake data.
+    // ---------------------------------------------------------------------
     getEarthquakes() {
         return this.earthquakeData;
     }

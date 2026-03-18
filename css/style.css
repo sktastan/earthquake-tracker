@@ -1,3 +1,6 @@
+/* ---------------------------------------------------------------------
+Global Styles
+---------------------------------------------------------------------*/
 @import url("https://fonts.googleapis.com/css?family=Ubuntu:400,700");
 
 * {
@@ -16,6 +19,9 @@ body {
     overflow: hidden;
 }
 
+/* ---------------------------------------------------------------------
+Map Styles
+---------------------------------------------------------------------*/
 .map {
     width: 100%;
     height: 100%;
@@ -23,6 +29,9 @@ body {
     position: relative;
 }
 
+/* ---------------------------------------------------------------------
+Table Styles
+---------------------------------------------------------------------*/
 table {
     width: 100%;
     border-collapse: collapse;
@@ -62,6 +71,9 @@ table tr:hover {
     /* box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.5); */
 }
 
+/* ---------------------------------------------------------------------
+Data Table Styles
+---------------------------------------------------------------------*/
 .data-table {
     width: 100%;
     border-collapse: collapse;
@@ -80,6 +92,9 @@ table tr:hover {
     text-align: left;
 }
 
+/* ---------------------------------------------------------------------
+OpenLayers Tooltip Styles
+---------------------------------------------------------------------*/
 .ol-tooltip {
     position: relative;
     background: rgba(0, 0, 0, 0.7);
@@ -108,6 +123,9 @@ table tr:hover {
     border-color: rgba(0, 0, 0, 0.7) transparent transparent transparent;
 }
 
+/* ---------------------------------------------------------------------
+Signal Animation Styles
+---------------------------------------------------------------------*/
 @keyframes pulse-signal {
     0% {
         transform: scale(0.95);
@@ -143,6 +161,9 @@ table tr:hover {
     animation: pulse-signal 1.5s infinite ease-out;
 }
 
+/* ---------------------------------------------------------------------
+New Earthquake Row Highlight Styles
+---------------------------------------------------------------------*/
 @keyframes highlight-new-row {
     0% {
         background-color: rgba(255, 82, 82, 0.6);
@@ -164,6 +185,9 @@ table tr:hover {
     animation: highlight-new-row 0.5s steps(1) infinite;
 }
 
+/* ---------------------------------------------------------------------
+Info Panels Styles (Earthquake, Weather, Log)
+---------------------------------------------------------------------*/
 .earthquakeInfo {
     display: none; /* Hide by default on desktop */
     top: 80px;
@@ -238,6 +262,9 @@ table tr:hover {
     /* Subtle dark icons */
 }
 
+/* ---------------------------------------------------------------------
+Sidebar Styles
+---------------------------------------------------------------------*/
 .sidebar {
     height: 100%;
     width: 0;
@@ -363,6 +390,9 @@ table tr:hover {
     background-color: #2e2e2e;
 }
 
+/* ---------------------------------------------------------------------
+Magnitude Color Classes
+---------------------------------------------------------------------*/
 .low-magnitude {
     background-color: rgba(0, 255, 0, 0.8);
 }
@@ -380,7 +410,9 @@ table tr:hover {
     color: white;
 }
 
-/* ------------------------------------------------- */
+/* ---------------------------------------------------------------------
+Progress Bar Styles
+---------------------------------------------------------------------*/
 .progress-overlay {
     position: fixed;
     top: 0;
@@ -440,7 +472,9 @@ table tr:hover {
     pointer-events: none;
 }
 
-/* --- Styles for Bottom Navigation Bar --- */
+/* ---------------------------------------------------------------------
+Bottom Navigation Bar Styles (Mobile)
+---------------------------------------------------------------------*/
 /* Default (Desktop) Styles */
 .bottom-nav-bar {
     display: flex; /* Visible by default */
@@ -495,7 +529,9 @@ table tr:hover {
     background-color: #b22424; /* Highlight on hover or active */
 }
 
-/* Responsive Styles for Mobile Devices */
+/* ---------------------------------------------------------------------
+Responsive Styles for Mobile Devices
+---------------------------------------------------------------------*/
 @media (max-width: 719px) {
     body {
         flex-direction: column; /* Stack elements vertically */

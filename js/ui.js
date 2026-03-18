@@ -4,6 +4,9 @@ let highlightedRowInfo = {
     timeoutId: null
 };
 
+// ---------------------------------------------------------------------
+//      Logs a message to the log div in the UI.
+// ---------------------------------------------------------------------
 function logToDiv(message) {
     const logDiv = document.getElementById('log');
     if (logDiv) {
@@ -13,16 +16,25 @@ function logToDiv(message) {
     }
 }
 
+// ---------------------------------------------------------------------
+//      Clears all content from the log div.
+// ---------------------------------------------------------------------
 function clearLogToDiv() {
     const logDiv = document.getElementById('log');
     logDiv.innerHTML = ''; // Clear previous content
 }
 
+// ---------------------------------------------------------------------
+//      Converts a temperature value from Celsius to Fahrenheit.
+// ---------------------------------------------------------------------
 function ConvertCelsiusToFahrenheit(celsius) {
     return (celsius * 9 / 5 + 32).toFixed(2);
 }
 
 // ... weatherDataUI and earthquakesDataUI functions remain the same ...
+// ---------------------------------------------------------------------
+//      Updates the Weather Info UI with the provided weather data.
+// ---------------------------------------------------------------------
 function weatherDataUI(data) {
     const imgPath = `img/`; // Construct the image path
     const imgSize = 24; // Set the image size (adjust as needed)
@@ -70,6 +82,9 @@ function weatherDataUI(data) {
             `;
 }
 
+// ---------------------------------------------------------------------
+//      Updates the Earthquake Info UI with the provided earthquake data.
+// ---------------------------------------------------------------------
 function earthquakesDataUI(eqd) {
     const imgPath = `img/`; // Construct the image path
     const imgSize = 24; // Set the image size (adjust as needed)
@@ -104,6 +119,9 @@ function earthquakesDataUI(eqd) {
 }
 
 // --- Function to highlight the first row in the table ---
+// ---------------------------------------------------------------------
+//      Highlights the first row of the earthquake table for a short duration.
+// ---------------------------------------------------------------------
 function tableRowHighlight() {
     console.log("tableRowHighlight called");
     const dataBody = document.getElementById('data-body');
@@ -159,6 +177,9 @@ function tableRowHighlight() {
 }
 
 // Add isInitialLoad parameter, default to false
+// ---------------------------------------------------------------------
+//      Populates the data table with the list of earthquakes.
+// ---------------------------------------------------------------------
 function populateTable(earthquakesData, isInitialLoad = false) {
     const dataBody = document.getElementById('data-body');
     const tableCountSpan = document.getElementById('table-count');
@@ -281,6 +302,9 @@ function populateTable(earthquakesData, isInitialLoad = false) {
 
 // ------------------------------------------------- //
 // --- Sidebar Functionality ---
+// ---------------------------------------------------------------------
+//      Initializes the sidebar interactions, inputs, and event listeners.
+// ---------------------------------------------------------------------
 function initializeSidebar(getCurrentSettingsCallback, updateSettingsCallback, osmInstance) {
     const sidebar = document.getElementById("sidebar");
     const openBtn = document.getElementById("openSidebarBtn");
@@ -537,6 +561,9 @@ let showProgressBar; // Declare variable for showing the bar
     let isComplete = false; // Flag to prevent multiple completions/hiding actions
 
     // Assign the function definition to the outer variable
+    // ---------------------------------------------------------------------
+    //      Updates the progress bar width and percentage.
+    // ---------------------------------------------------------------------
     updateProgress = function (targetPercentage, forceComplete = false) {
         // Only proceed if not already complete OR if we are forcing completion (hiding)
         if (isComplete && !forceComplete) return;
@@ -586,6 +613,9 @@ let showProgressBar; // Declare variable for showing the bar
     }
 
     // Function to update the message text
+    // ---------------------------------------------------------------------
+    //      Updates the text message displayed on the progress overlay.
+    // ---------------------------------------------------------------------
     updateProgressMessage = function (newMessage) {
         if (messageText) {
             messageText.textContent = newMessage;
@@ -593,6 +623,9 @@ let showProgressBar; // Declare variable for showing the bar
     }
 
     // --- Function to show and reset the progress bar ---
+    // ---------------------------------------------------------------------
+    //      Resets and displays the progress bar overlay.
+    // ---------------------------------------------------------------------
     showProgressBar = function (initialMessage = "Processing...") {
         console.log("Showing progress bar.");
         isComplete = false; // Reset completion flag
@@ -636,6 +669,9 @@ let showProgressBar; // Declare variable for showing the bar
 })(); // End of Progress Bar IIFE
 
 // --- Bottom Navigation Bar Functionality for Mobile ---
+// ---------------------------------------------------------------------
+//      Initializes the bottom navigation bar behavior for mobile devices.
+// ---------------------------------------------------------------------
 function initializeBottomNavBar() {
     const panels = {
         earthquake: document.getElementById('earthquakeInfo'),
@@ -700,6 +736,9 @@ function initializeBottomNavBar() {
 //  * Loads a theme script dynamically.
 //  * @param {string} themeName - The name of the theme file (without .js extension).
 //  */
+// ---------------------------------------------------------------------
+//      Dynamically loads a theme JavaScript file and removes previous themes.
+// ---------------------------------------------------------------------
 function loadThemeScript(themeName) {
     const themeStyleClass = 'dynamic-theme-style-sheet'; // Class to identify theme style tags
 
@@ -744,6 +783,9 @@ function loadThemeScript(themeName) {
 //  * Initializes UI elements and event listeners.
 //  * Call this function when the DOM is ready.
 //  */
+// ---------------------------------------------------------------------
+//      Main entry point for initializing UI components and listeners.
+// ---------------------------------------------------------------------
 function initializeUI(osmInstance) { // Accept the OpenStreetMap instance
     if (!osmInstance) {
         console.error("InitializeUI requires an OpenStreetMap instance.");

@@ -1,18 +1,33 @@
+// ---------------------------------------------------------------------
+//      Manages weather data fetching based on geographic coordinates.
+// ---------------------------------------------------------------------
 class WeatherData {
     // ... (rest of WeatherData class)
+    // ---------------------------------------------------------------------
+    //      Initializes the WeatherData instance with optional coordinates.
+    // ---------------------------------------------------------------------
     constructor(latitude, longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
     }
 
+    // ---------------------------------------------------------------------
+    //      Sets the latitude for weather data fetching.
+    // ---------------------------------------------------------------------
     setCurrentLatitude(latitude) {
         this.lat = parseFloat(latitude);
     }
 
+    // ---------------------------------------------------------------------
+    //      Sets the longitude for weather data fetching.
+    // ---------------------------------------------------------------------
     setCurrentLongitude(longitude) {
         this.lon = parseFloat(longitude);
     }
 
+    // ---------------------------------------------------------------------
+    //      Fetches current weather data from the MET Norway API.
+    // ---------------------------------------------------------------------
     async getCurrentWeatherData() {
         // Validate coordinates before fetching
         if (typeof this.latitude !== 'number' || isNaN(this.latitude) || typeof this.longitude !== 'number' || isNaN(this.longitude)) {
