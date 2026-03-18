@@ -26,15 +26,18 @@
                     <option value="OSM-Default" selected>OSM-Default</option>
                     <option value="OSM-Default-DarkMap">OSM-Default-DarkMap</option>
                     <option value="light-style-chromatic-glass">Chromatic Glass (Light)</option>
-                    <option value="dark-style-retro-terminal">Retro Terminal (Dark)</option>                    
-                    <option value="light-style-crystal-clear">Crystal Clear(Light)</option>
-                    <option value="dark-style-shadow-onyx">Shadow Onyx (Dark)</option>
-                    <option value="light-style-solid-sky">Solid Sky (Light)</option>
-                    <option value="dark-style-solid-slate">Solid Slate (Dark)</option>
-                    <option value="light-style-solid-mint">Solid Mint (Light)</option>
-                    <option value="dark-style-solid-crimson">Solid Crimson (Dark)</option>
-                    <option value="light-style-solid-peach">Solid Peach (Light)</option>
-                    <option value="dark-style-solid-indigo">Solid Indigo (Dark)</option>
+                    <option value="light-style-sketchbook">Sketchbook (Light)</option>
+                    <option value="light-style-ink-wash">Paper & Ink Wash (Light)</option>
+                    <option value="dark-style-synthwave-sunset">Synthwave Sunset (Dark)</option>
+                    <option value="dark-style-retro-terminal">Retro Terminal (Dark)</option>
+                    <option value="dark-style-liquid-metal">Liquid Metal (Dark)</option>
+                    <option value="dark-style-deep-ocean">Deep Ocean (Dark)</option>
+                    <option value="dark-style-nordic-night">Nordic Night (Dark)</option>
+                    <option value="dark-style-dark-blue">Dark Blue</option>
+                    <option value="dark-style-dark-midnight">Dark Midnight</option>
+                    <option value="dark-style-solar-flare">Solar Flare (Dark)</option>
+                    <option value="dark-style-bio-luminescent">Bio-Luminescent (Dark)</option>
+                    <option value="dark-style-celestial-silk">Celestial Silk (Dark)</option>
                 </select>
             </div>
 
@@ -61,7 +64,7 @@
             <input type="number" id="sidebarMaxMag" name="maxMag" step="0.1" min="0">
 
             <label for="sidebarLimit">Result Limit:</label>
-            <input type="number" id="sidebarLimit" name="limit" step="1" min="0" placeholder="Default: 1000">
+            <input type="number" id="sidebarLimit" name="limit" step="1" min="0" placeholder="0 for no limit">
 
             <br>
             <label for="sidebarStartDate">Start Date:</label>
@@ -104,9 +107,8 @@
         </div>
     </div>
 
-<!-- <button id="toggleTableContainer" class="toggleTableContainer nav-button"><img src="img/description.svg" alt="Data Table" width="32" height="32"> <span>Data Table</span></button> -->
     <!-- Table Container -->
-    <div id="tableContainer" class="tableContainer">     
+    <div id="tableContainer" class="tableContainer">
         <h3 class="table-heading"><img src="img/earth.svg" alt="svg-image" width="32" height="32">Earthquake Data (<span
                 id="table-count">0</span> entries)</h3>
         <table id="data-table">
