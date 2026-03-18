@@ -91,7 +91,7 @@ td {
 
 /* Map Container */
 .map {
-    width: 65%;
+    width: 100%; /* Default to full width, desktop override below */
     height: 100%;
     position: relative;
     background: ${containerBg}; /* Dark background */
@@ -101,7 +101,7 @@ td {
 
 /* Table Container */
 .tableContainer {
-    width: 35%;
+    width: 38%; /* Desktop width */
     height: 100%;
     overflow-y: auto;
     padding: 15px;
@@ -149,6 +149,7 @@ td {
     font-weight: 400;
     color: ${textPrimary}; /* Green header text */
     text-shadow: 0 0 3px ${textPrimary};
+    background-color: ${containerBg}; /* Dark bg */
 }
 
 #earthquakeInfo h3 img,
@@ -174,6 +175,18 @@ td {
     box-shadow: 2px 0 0px ${border}; /* Offset shadow */
     border-right: 1px solid ${border};
     border-radius: 0;
+}
+
+.sidebar-heading {
+    /* font-size: 20px;
+    color: #ffffff;*/
+    background-color: ${containerBg}; 
+    border-radius: 4px;
+    /* text-align: center; */
+    /* margin: 10px 0; */
+    padding: 14px;
+    /* border-bottom: 1px solid #2e2e2e; */
+     text-align: center; /* Center align for mobile */
 }
 
 .sidebar a {
@@ -202,11 +215,24 @@ td {
     color: ${textDim}; /* Dimmer green */
     text-decoration: none;
     transition: color 0.1s, text-shadow 0.1s;
+    background: none; /* No background */
 }
 
 .sidebar .closebtn:hover {
-    color: ${accentError}; /* Glitch Red on hover */
+    color: ${textPrimary}; /* Bright green on hover */
+    text-decoration: none;
     text-shadow: 0 0 3px ${accentError};
+}
+
+.nav-button:hover {  
+
+     background-color: ${textPrimary}; /* Green background on hover */
+     color: ${terminalBg}; /* Dark text on hover */
+}
+
+.nav-button.active {
+    background-color:   ${textDim}; /* Green background for active button */
+    color: ${terminalBg}; /* Dark text for active button */
 }
 
 /* --- Sidebar Section Button Styling (Retro Terminal) --- */
@@ -246,7 +272,7 @@ td {
     border: 1px solid ${textPrimary}; /* Green border */
     position: fixed;
     top: 10px;
-    left: 10px;
+    left: 35px;
     z-index: 1002;
     border-radius: 0px; /* Sharp corners */
     transition: all 0.1s ease-in-out;
@@ -456,7 +482,7 @@ td {
 }
 
 .weatherInfo {
-    top: 380px; /* Adjust spacing */
+    top: 420px; /* Adjust spacing */
     border-left: 3px solid ${accentHighlight};
 }
 
@@ -468,7 +494,7 @@ td {
     height: 110px;
     overflow-y: auto;
     background-color: rgba(10, 15, 10, 0.9); /* terminalBg transparent */
-    border: 1px solid ${border}; /* Subtle border */
+    border-left: 3px solid ${textPrimary}; /* Subtle border */
     border-radius: 0px;
     padding: 8px 12px;
     box-shadow: 1px 1px 0px ${border};
@@ -518,7 +544,102 @@ td {
 // --- Apply Styles and Cleanup ---
 
 // Add styles to the style element (Cleanup is now handled by loadThemeScript)
-styleSheet.textContent = cssStyles; // Modern way to add CSS text
+styleSheet.textContent = cssStyles + `
+/* --- Media Query for Mobile --- */
+@media (max-width: 719px) {
+    body {
+        flex-direction: column;
+        overflow: auto; 
+        height: auto; 
+        padding-bottom: 60px; /* Space for bottom nav bar */
+    }
+
+    .map {
+        width: 100%;
+        height: 100vh; /* Base layer, will be covered by fixed panels */
+        position: relative; 
+        z-index: 1;
+        border-right: none;
+    }
+
+    /* Reset desktop fixed positioning for items that become overlays */
+    .earthquakeInfo, .weatherInfo, .log {
+        position: fixed; 
+        left: 0;
+        right: 0; 
+        width: 100%;
+        max-width: none;
+        border-radius: 0;
+        box-sizing: border-box;
+        margin: 0;
+        border-left: none; 
+        border-right: none;
+    }
+    .tableContainer { /* Was part of flex row on desktop */
+        position: fixed; 
+        left: 0;
+        right: 0;
+        width: 100%;
+        /* height, max-height, display are handled by .visible */
+        overflow-y: auto;
+        z-index: 990;
+        background-color: ${terminalBg}; /* Lightest background for table area */
+        backdrop-filter: blur(8px); /* Match style.css blur for panels */
+        border-radius: 0;
+        padding: 0 15px 15px 15px; /* Specific padding for table container */
+        box-sizing: border-box;
+        border-left: none;
+    }
+
+    /* Styles for when these panels ARE VISIBLE on mobile (via .visible class) */
+    .tableContainer.visible, .earthquakeInfo.visible, .weatherInfo.visible {
+        top: 0;
+        bottom: 60px; /* Space for bottom nav bar */
+        height: auto; 
+        max-height: calc(100vh - 60px);
+        z-index: 990; 
+        padding: 15px; /* Uniform padding for overlay panels */
+    }
+    .earthquakeInfo.visible, .weatherInfo.visible {
+        background-color: ${containerBg}; /* Standard panel background */
+        backdrop-filter: blur(8px); /* Glass effect */
+    }
+
+    .tableContainer.visible h3.table-heading {
+        position: sticky;
+        witdh: auto; /* Full width sticky header */
+        top: 0;
+        z-index: 10; 
+        background-color: ${terminalBg}; /* Match panel background for seamless scroll */
+        padding-top: 15px; /* Align with container padding */
+        margin-left: -15px; margin-right: -15px; /* Full width sticky header */
+        padding-left: 15px; padding-right: 15px;
+    }
+
+    .tableContainer.visible th {
+        position: sticky;
+        top: 58px; /* Approx height of h3.table-heading. Adjust if necessary. */
+        z-index: 9; 
+    }
+    
+    .earthquakeInfo.visible h3, .weatherInfo.visible h3 {
+        margin-top: 0;
+    }
+
+    .hamburger-btn {
+        z-index: 1006;
+    }
+    .log {
+        top: auto; 
+        z-index: 1000; 
+        background-color: ${containerBg}; /* glassBg transparent */
+        backdrop-filter: blur(4px);
+        padding: 10px;
+        border-top: 1px solid ${border}; 
+        border-left: 3px solid ${textPrimary};
+    }
+}
+`;
 
 // Append style element to head
 document.head.appendChild(styleSheet);

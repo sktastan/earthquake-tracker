@@ -19,7 +19,7 @@ body {
 .map {
     width: 100%;
     height: 100%;
-    border: 1px solid #ccc;
+    /* border: 1px solid #ccc; */
     position: relative;
 }
 
@@ -50,6 +50,7 @@ table tr:hover {
 
 .tableContainer {
     position: fixed;
+    display: none; /* Hide by default on desktop */
     right: 0px;
     width: 33%;
     height: 100%;
@@ -164,16 +165,19 @@ table tr:hover {
 }
 
 .earthquakeInfo {
+    display: none; /* Hide by default on desktop */
     top: 80px;
 }
 
 .log {
+    /* .log remains visible by default as per its existing styles */
     bottom: 20px;
     max-height: 250px;
     padding: 15px;
 }
 
 .weatherInfo {
+    display: none; /* Hide by default on desktop */
     top: 350px;
 }
 
@@ -187,10 +191,17 @@ table tr:hover {
     background: rgba(0, 0, 0, 0.7);
     color: white;
     /* padding: 15px; */
-    z-index: 10;
+    z-index: 1002;
     border-radius: 5px;
     box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(6px);
+}
+
+/* Rule to show panels when .visible class is added by JS */
+.earthquakeInfo.visible,
+.weatherInfo.visible,
+.tableContainer.visible {
+    display: block;
 }
 
 .eqdDivInfo {
@@ -231,7 +242,7 @@ table tr:hover {
     height: 100%;
     width: 0;
     position: fixed;
-    z-index: 1001;
+    z-index: 1003;
     top: 0;
     left: 0;
     background-color: #ffffff;
@@ -429,6 +440,61 @@ table tr:hover {
     pointer-events: none;
 }
 
+/* --- Styles for Bottom Navigation Bar --- */
+/* Default (Desktop) Styles */
+.bottom-nav-bar {
+    display: flex; /* Visible by default */
+    flex-direction: row; /* Buttons side-by-side */
+    position: fixed;
+    top: 15px; /* Align with hamburger button's top */
+    /* Hamburger: left: 35px, estimated width: 45px. Spacing: 10px */
+    left: calc(35px + 45px + 10px); /* Positioned to the right of the hamburger button */
+    background-color: #2e2e2e;
+    color: white;
+    z-index: 1000;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    height: auto; /* Fit content height */
+    padding: 0 5px; /* Small padding for the bar itself */
+}
+
+.nav-button {
+    background-color: transparent;
+    color: white;
+    border: none;
+    padding: 0 10px; /* Padding for each button */
+    font-size: 12px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: row; /* Icon and text side-by-side */
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* Space between icon and text */
+    height: 42px; /* Match hamburger button height (image 32px + vertical padding) */
+    white-space: nowrap; /* Prevent text from wrapping */
+}
+
+.nav-button img {
+    /* Width and height are set in HTML (32x32), which is fine */
+    flex-shrink: 0; /* Prevent image from shrinking */
+}
+
+.nav-button span {
+    font-size: 12px; /* Consistent font size for text */
+    line-height: 1; /* Adjust line height for better vertical alignment if needed */
+}
+
+.nav-button:hover {
+    /* Highlight on hover or active */
+    /* background-color: #b22424;  */
+
+     background-color: #1c638b; /* Highlight on hover or active */
+}
+
+.nav-button.active {
+    background-color: #b22424; /* Highlight on hover or active */
+}
+
 /* Responsive Styles for Mobile Devices */
 @media (max-width: 719px) {
     body {
@@ -455,25 +521,29 @@ table tr:hover {
     }
 
     .hamburger-btn {
-        top: 10px;
-        left: 15px;
+        /* top: 10px; */
+        /* left: 15px; */
         z-index: 1006; /* Ensure hamburger is above sidebar when closed */
     }
 
     /* Bottom Navigation Bar */
     .bottom-nav-bar {
         display: flex;
+        flex-direction: row; /* Explicit for mobile, though default for flex */
         justify-content: space-around;
         align-items: center;
         position: fixed;
-        bottom: 0;
-        left: 0;
+        top: auto; /* Override desktop 'top' */
+        left: 0;   /* Override desktop 'left' */
+        bottom: 0; /* Position at the bottom */
         width: 100%;
         height: 60px;
         background-color: #2e2e2e;
         color: white;
         z-index: 1000;
         box-shadow: 0 -2px 5px rgba(0,0,0,0.2);
+        border-radius: 0; /* No border radius for full-width bottom bar */
+        padding: 0; /* Reset padding for mobile */
     }
 
     .nav-button {
@@ -481,7 +551,7 @@ table tr:hover {
         color: white;
         border: none;
         padding: 10px 15px;
-        font-size: 14px;
+        font-size: 12px; /* Adjusted for consistency, or use 14px if preferred for mobile */
         cursor: pointer;
         flex-grow: 1;
         text-align: center;
@@ -491,22 +561,18 @@ table tr:hover {
         align-items: center;
         justify-content: center;
         gap: 4px; /* Space between icon and text */
-    }
-
-    /* .nav-button img {
-        filter: invert(1) brightness(2);
+        height: 100%; /* Full height of the mobile bar */
+        white-space: normal; /* Allow text to wrap on mobile if needed */
     }
 
     .nav-button span {
-        font-size: 10px; 
-    }*/ 
+        font-size: 10px; /* Smaller text for mobile button labels */
+        line-height: 1.2;
+    }
+
 
     .nav-button:hover, .nav-button.active {
         background-color: #b22424;
-    }
-
-    .nav-button.active img {
-        /* Optional: different style for active icon, e.g., if you had colored active icons */
     }
 
     /* Adjustments for toggleable panels */
@@ -534,7 +600,7 @@ table tr:hover {
     .earthquakeInfo.visible,
     .weatherInfo.visible,
     .tableContainer.visible {
-        display: block; /* Show when .visible class is added */
+        display: block !important; /* Show when .visible class is added */
     }
 
     .tableContainer {
@@ -543,7 +609,9 @@ table tr:hover {
 
     .tableContainer .table-heading {
         position: sticky;
+        width: 100%;
         top: 0; /* Sticky header for the table within its container */
+        text-align: center; /* Center align for mobile */
     }
     
     .tableContainer th {
@@ -568,6 +636,14 @@ table tr:hover {
 
     /* Hide desktop-specific elements or adjust them */
     .log { /* Assuming .log is not needed or will be integrated differently */
-        display: none; 
+        /* display: none;  */
+        display: block; /* Show log on mobile if needed */
+        bottom: 60px; /* Adjust position to avoid nav bar */
+        left: 0;
+        border-radius: 0;
+        width: 100%;
     }
 }
+
+/* Removed .table-container--hidden and .toggleTableContainer styles as they are no longer needed. */
+/* The .bottom-nav-bar and its .visible class logic now handle this. */

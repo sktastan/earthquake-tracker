@@ -98,7 +98,7 @@ td {
 
 /* Map Container */
 .map {
-    width: 100%;
+    width: 100%; /* Default to full width, desktop override below */
     height: 100%;
     position: relative;
     background: ${glassBg}; /* Light background */
@@ -108,13 +108,18 @@ td {
 
 /* Table Container */
 .tableContainer {
-    width: 36%;
+    position: fixed;
+    display: none; /* Hide by default on desktop */
+    right: 0; /* Consistent with other themes */
+    width: 38%;
     height: 100%;
     overflow-y: auto;
-    padding: 15px;
     background-color: ${glassBg}; /* Main Background */
     border-left: 1px solid ${borderSubtle}; /* Subtle border */
     border-radius: 0;
+    color: white;
+    padding: 0 5px;
+    backdrop-filter: blur(6px);
 }
 
 /* Card Component (Chromatic Glass) */
@@ -258,7 +263,7 @@ td {
     border: 1px solid rgba(0, 0, 0, 0.1);
     position: fixed;
     top: 15px;
-    left: 15px;
+    left: 35px;
     z-index: 1002;
     border-radius: 5px; /* Rounded */
     transition: all 0.2s ease-in-out;
@@ -474,7 +479,7 @@ td {
 }
 
 .weatherInfo {
-    top: 450px; /* Adjust spacing */
+    top: 410px; /* Adjust spacing */
     border-left: 4px solid ${prismMagenta};
 }
 
@@ -493,6 +498,44 @@ td {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     color: ${textDim}; /* Muted gray log text */
     line-height: 1.5;
+}
+
+.nav-button {
+    background-color: transparent;
+    color: white;
+    border: none;
+    padding: 0 10px; /* Padding for each button */
+    font-size: 12px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: row; /* Icon and text side-by-side */
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* Space between icon and text */
+    height: 42px; /* Match hamburger button height (image 32px + vertical padding) */
+    white-space: nowrap; /* Prevent text from wrapping */
+}
+
+.nav-button img {
+    /* Width and height are set in HTML (32x32), which is fine */
+    flex-shrink: 0; /* Prevent image from shrinking */
+}
+
+.nav-button span {
+    font-size: 12px; /* Consistent font size for text */
+    line-height: 1; /* Adjust line height for better vertical alignment if needed */
+}
+
+.nav-button:hover {
+    /* Highlight on hover or active */
+    /* background-color: #b22424;  */
+
+     background-color: ${prismMagenta}; /* Semi-transparent white */
+    ; /* Highlight on hover or active */
+}
+
+.nav-button.active {
+    background-color: ${prismGreen}; /* Highlight on hover or active */
 }
 
 /* Hidden class for Progress Bar */
@@ -525,6 +568,102 @@ td {
         background-position: -100% 0;
         transform: scale(1);
         box-shadow: none;
+    }
+}
+
+/* --- Media Query for Mobile (max-width: 719px) --- */
+@media (max-width: 719px) {
+    body {
+        flex-direction: column;
+        overflow: auto; 
+        height: auto; 
+        padding-bottom: 60px; /* Space for bottom nav bar */
+    }
+
+    .map {
+        width: 100%;
+        height: 100vh; /* Base layer, will be covered by fixed panels */
+        position: relative; 
+        z-index: 1;
+        border-right: none;
+    }
+
+    /* Reset desktop fixed positioning for items that become overlays */
+    .earthquakeInfo, .weatherInfo, .log {
+        position: fixed; 
+        left: 0;
+        right: 0; 
+        width: 100%;
+        max-width: none;
+        border-radius: 0;
+        box-sizing: border-box;
+        margin: 0;
+        border-left: none; 
+        border-right: none;
+    }
+    .tableContainer { /* Was part of flex row on desktop */
+        position: fixed; 
+        left: 0;
+        right: 0;
+        width: 100%;
+        /* height, max-height, display are handled by .visible */
+        overflow-y: auto;
+        z-index: 990;
+        background-color: ${glassBg}; /* Lightest background for table area */
+        backdrop-filter: blur(8px); /* Match style.css blur for panels */
+        border-radius: 0;
+        padding: 0 15px 15px 15px; /* Specific padding for table container */
+        box-sizing: border-box;
+        border-left: none;
+    }
+
+    /* Styles for when these panels ARE VISIBLE on mobile (via .visible class) */
+    .tableContainer.visible, .earthquakeInfo.visible, .weatherInfo.visible {
+        top: 0;
+        bottom: 60px; /* Space for bottom nav bar */
+        height: auto; 
+        max-height: calc(100vh - 60px);
+        z-index: 990; 
+        padding: 15px; /* Uniform padding for overlay panels */
+    }
+    .earthquakeInfo.visible, .weatherInfo.visible {
+        background-color: ${containerBg}; /* Standard panel background */
+        backdrop-filter: blur(8px); /* Glass effect */
+    }
+
+    .tableContainer.visible h3.table-heading {
+        position: sticky;
+        witdh: auto; /* Full width sticky header */
+        top: 0;
+        z-index: 10; 
+        background-color: ${glassBg}; /* Match panel background for seamless scroll */
+        padding-top: 15px; /* Align with container padding */
+        margin-left: -15px; margin-right: -15px; /* Full width sticky header */
+        padding-left: 15px; padding-right: 15px;
+        text-align: center; /* Center align for mobile */
+    }
+
+    .tableContainer.visible th {
+        position: sticky;
+        top: 58px; /* Approx height of h3.table-heading. Adjust if necessary. */
+        z-index: 9; 
+    }
+    
+    .earthquakeInfo.visible h3, .weatherInfo.visible h3 {
+        margin-top: 0;
+    }
+
+    .hamburger-btn {
+        z-index: 1006;
+    }
+    .log {
+        bottom: 60px; /* Above nav bar */
+        top: auto; 
+        z-index: 1000;  
+        background-color: rgba(248, 249, 250, 0.85); /* glassBg transparent */
+        backdrop-filter: blur(4px);
+        padding: 10px;
+        border-top: 1px solid ${borderSubtle}; 
     }
 }
 
