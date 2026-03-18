@@ -4,7 +4,7 @@ class EarthquakeData {
         this.format = "json";
         this.minMagnitude = 2;
         this.maxMagnitude = 8;
-        this.limit = 0;
+        this.limit = 1000;
         this.stationName = "usgs"; // Default station, will be set later if needed
         this.processedEarthquakeIds = new Set();
         this.lastFetchTimes = {};

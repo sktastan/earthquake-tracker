@@ -575,6 +575,10 @@ table tr:hover {
         background-color: #b22424;
     }
 
+    .nav-button.active img {
+        /* Optional: different style for active icon, e.g., if you had colored active icons */
+    }
+
     /* Adjustments for toggleable panels */
     .earthquakeInfo,
     .weatherInfo,

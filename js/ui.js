@@ -354,7 +354,7 @@ function initializeSidebar(getCurrentSettingsCallback, updateSettingsCallback, o
             // Set defaults maybe?
             minMagInput.value = 1;
             maxMagInput.value = 8;
-            limitInput.value = 0;
+            limitInput.value = 1000;
             startDateInput.value = '';
             endDateInput.value = new Date().toISOString().split("T")[0];
             // --- Default Lat/Lon ---
@@ -378,7 +378,7 @@ function initializeSidebar(getCurrentSettingsCallback, updateSettingsCallback, o
         openBtn.style.display = 'block';
     }
 
-    function handleUpdateClick() {
+    function handleUpdateClick() { closeNav(); // Close sidebar after update attempt
         // Read existing values
         const newMinMag = parseFloat(minMagInput.value);
         const newMaxMag = parseFloat(maxMagInput.value);
@@ -448,7 +448,7 @@ function initializeSidebar(getCurrentSettingsCallback, updateSettingsCallback, o
             console.error("Update callback function is not defined!");
         }
 
-        closeNav(); // Close sidebar after update attempt
+        
     }
 
     // --- NEW: Function to update sidebar inputs from map event ---
@@ -506,6 +506,11 @@ function initializeSidebar(getCurrentSettingsCallback, updateSettingsCallback, o
             getMapBoundsBtn.disabled = true;
         }
     }
+
+    // --- Ensure sidebar is closed initially by default ---
+    // This will set the inline styles to ensure it's closed,
+    // overriding potential CSS that might open it by default on certain screen sizes.
+    closeNav();
     // --- END NEW ---
 } // End of initializeSidebar
 
@@ -632,63 +637,63 @@ let showProgressBar; // Declare variable for showing the bar
 
 // --- Bottom Navigation Bar Functionality for Mobile ---
 function initializeBottomNavBar() {
-    const earthquakeInfoPanel = document.getElementById('earthquakeInfo');
-    const weatherInfoPanel = document.getElementById('weatherInfo');
-    const tableContainerPanel = document.getElementById('tableContainer');
+    const panels = {
+        earthquake: document.getElementById('earthquakeInfo'),
+        weather: document.getElementById('weatherInfo'),
+        table: document.getElementById('tableContainer')
+    };
 
-    const toggleEarthquakeBtn = document.getElementById('toggleEarthquakeInfo');
-    const toggleWeatherBtn = document.getElementById('toggleWeatherInfo');
-    const toggleTableBtn = document.getElementById('toggleTableContainer');
+    const buttons = {
+        earthquake: document.getElementById('toggleEarthquakeInfo'),
+        weather: document.getElementById('toggleWeatherInfo'),
+        table: document.getElementById('toggleTableContainer')
+    };
 
-    const allPanels = [earthquakeInfoPanel, weatherInfoPanel, tableContainerPanel];
-    const allNavButtons = [toggleEarthquakeBtn, toggleWeatherBtn, toggleTableBtn];
-
-    if (!earthquakeInfoPanel || !weatherInfoPanel || !tableContainerPanel || !toggleEarthquakeBtn || !toggleWeatherBtn || !toggleTableBtn) {
-        console.warn("One or more bottom navigation bar elements or panels not found. Mobile toggle functionality may be incomplete.");
+    // Check if all elements exist
+    if (!panels.earthquake || !panels.weather || !panels.table ||
+        !buttons.earthquake || !buttons.weather || !buttons.table) {
+        console.warn("Bir veya daha fazla alt gezinme çubuğu öğesi veya paneli bulunamadı. İşlevsellik eksik olabilir.");
         return;
     }
 
-    function setActivePanel(targetPanel, targetButton) {
-        // Hide all panels and remove active class from all buttons
-        allPanels.forEach(panel => panel.classList.remove('visible'));
-        allNavButtons.forEach(button => button.classList.remove('active'));
+    const allPanelElements = Object.values(panels);
+    const allButtonElements = Object.values(buttons);
 
-        // If a targetPanel is provided and it's not already visible, show it and set button to active
-        if (targetPanel) {
-            targetPanel.classList.add('visible');
-            if (targetButton) {
-                targetButton.classList.add('active');
+    function handleButtonClick(panelKey) {
+        const targetPanel = panels[panelKey];
+        const targetButton = buttons[panelKey];
+
+        if (!targetPanel || !targetButton) {
+            console.warn(`Panel veya buton bulunamadı: ${panelKey}`);
+            return;
+        }
+
+        if (window.innerWidth > 719) { // Masaüstü davranışı
+            targetPanel.classList.toggle('visible');
+            targetButton.classList.toggle('active', targetPanel.classList.contains('visible'));
+        } else { // Mobil davranışı: Akordeon stili (aynı anda sadece bir panel görünür veya hiçbiri)
+            const clickedPanel = targetPanel;
+            const clickedButton = targetButton;
+            const wasClickedPanelVisible = clickedPanel.classList.contains('visible');
+
+            // Önce tüm panelleri gizle ve tüm butonların aktif durumunu kaldır.
+            // Bu, başka bir panel açıksa onun kapanmasını sağlar.
+            allPanelElements.forEach(p => p.classList.remove('visible'));
+            allButtonElements.forEach(b => b.classList.remove('active'));
+
+            // Eğer tıklanan panel daha önce görünür DEĞİL idiyse, şimdi onu görünür yap ve butonunu aktif et.
+            // Eğer zaten görünür idiyse, yukarıdaki adımda kapatıldığı için kapalı kalacaktır (toggle etkisi).
+            if (!wasClickedPanelVisible) {
+                clickedPanel.classList.add('visible');
+                clickedButton.classList.add('active');
             }
+            // Bu yaklaşım, temaların renklerini korur ve panellerin CSS ile tam genişlikte stillendirilmesine olanak tanır,
+            // çünkü JS yalnızca görünürlük ve aktif durum sınıflarını yönetir.
         }
-        // If no targetPanel (e.g., clicking an active button again), all panels remain hidden.
     }
-
-    toggleEarthquakeBtn.addEventListener('click', () => {
-        if (earthquakeInfoPanel.classList.contains('visible')) {
-            setActivePanel(null, null); // Hide if already visible
-        } else {
-            setActivePanel(earthquakeInfoPanel, toggleEarthquakeBtn);
-        }
-    });
-
-    toggleWeatherBtn.addEventListener('click', () => {
-        if (weatherInfoPanel.classList.contains('visible')) {
-            setActivePanel(null, null); // Hide if already visible
-        } else {
-            setActivePanel(weatherInfoPanel, toggleWeatherBtn);
-        }
-    });
-
-    toggleTableBtn.addEventListener('click', () => {
-        if (tableContainerPanel.classList.contains('visible')) {
-            setActivePanel(null, null); // Hide if already visible
-        } else {
-            setActivePanel(tableContainerPanel, toggleTableBtn);
-        }
-    });
-
-    // Initially, no panel is active on mobile unless explicitly set
-    // setActivePanel(null, null); // Or set a default one if desired: setActivePanel(earthquakeInfoPanel, toggleEarthquakeBtn);
+    buttons.earthquake.addEventListener('click', () => handleButtonClick('earthquake'));
+    buttons.weather.addEventListener('click', () => handleButtonClick('weather'));
+    buttons.table.addEventListener('click', () => handleButtonClick('table'));
 }
 
 // /**
@@ -753,18 +758,16 @@ function initializeUI(osmInstance) { // Accept the OpenStreetMap instance
         'OSM-Default': 'Default',
         'OSM-Default-DarkMap': 'World_Dark_Gray_Base',
         'light-style-chromatic-glass': 'EsriWorldGrayCanvas',
-        'light-style-sketchbook': 'EsriWorldGrayCanvas',
-        'light-style-ink-wash': 'EsriWorldGrayCanvas',
-        'dark-style-synthwave-sunset': 'GeoportailFrance',
-        'dark-style-retro-terminal': 'World_Dark_Gray_Base',
-        'dark-style-liquid-metal': 'World_Dark_Gray_Base',
-        'dark-style-deep-ocean': 'GeoportailFrance',
-        'dark-style-nordic-night': 'TopPlusOpenGrey',
-        'dark-style-dark-blue': 'EsriWorldImagery',
-        'dark-style-dark-midnight': 'TopPlusOpenGrey',
-        'dark-style-solar-flare': 'World_Dark_Gray_Base', // Added Solar Flare
-        'dark-style-bio-luminescent': 'World_Dark_Gray_Base', // Added Bio-Luminescent (Example map style)
-        'dark-style-celestial-silk': 'TopPlusOpenGrey' // Added Celestial Silk (Example map style)        
+        'dark-style-retro-terminal': 'World_Dark_Gray_Base',  
+        'light-style-crystal-clear': 'EsriWorldGrayCanvas', // Added Crystal Clear
+        'dark-style-shadow-onyx': 'World_Dark_Gray_Base', // Added Shadow Onyx
+        'light-style-solid-sky': 'EsriWorldGrayCanvas', // Added Solid Sky
+        'dark-style-solid-slate': 'World_Dark_Gray_Base', // Added Urban Night
+        'light-style-solid-mint': 'EsriWorldImagery', // Added Solid Mint
+        'dark-style-solid-crimson': 'GeoportailFrance', // Added Solid Crimson
+        'light-style-solid-peach': 'TopPlusOpenGrey', // Added Solid Peach
+        'dark-style-solid-indigo': 'World_Dark_Gray_Base', // Added Solid Indigo
+
         // Add other themes here as needed
     };
 
@@ -793,6 +796,36 @@ function initializeUI(osmInstance) { // Accept the OpenStreetMap instance
         console.error("Theme dropdown element (#sidebarThemeStyle) not found.");
     }
 
+    // Initialize other UI components
+    // initializeBottomNavBar();
+
     // ... (rest of your UI initializations)
 }
+// --- End of code to add to js/ui.js ---
+
+// --- New code for toggling table visibility ---
+// document.addEventListener('DOMContentLoaded', function() {
+//     const toggleButton = document.getElementById('toggleTableContainer');
+//     const tableDiv = document.getElementById('tableContainer');
+
+//     if (toggleButton && tableDiv) {
+//         toggleButton.addEventListener('click', function() {
+//             // This listener toggles the '.table-container--hidden' class.
+//             // See important considerations below regarding its use with existing mobile logic.
+//             tableDiv.classList.toggle('table-container--hidden');
+
+//             // Optional: Synchronize button's 'active' state.
+//             // However, this might conflict with how 'initializeBottomNavBar' manages 'active' state.
+//             // const isActive = !tableDiv.classList.contains('table-container--hidden');
+//             // toggleButton.classList.toggle('active', isActive);
+//         });
+//     } else {
+//         if (!toggleButton) {
+//             console.warn('Button with ID "toggleTableContainer" was not found for table toggle.');
+//         }
+//         if (!tableDiv) {
+//             console.warn('Element with ID "tableContainer" was not found for table toggle.');
+//         }
+//     }
+// });
 // --- End of code to add to js/ui.js ---
