@@ -84,3 +84,8 @@ earthquake-tracker/
 - Earthquake data provided by **USGS** and **EMSC**.
 - Weather data provided by **MET Norway**.
 - Map tiles provided by various services (OpenStreetMap, Jawg Maps, Stadia Maps, Esri, Geoportail France) depending on the selected theme.
+
+```
+
+Github demo page
+https://sktastan.github.io/earthquake-tracker
